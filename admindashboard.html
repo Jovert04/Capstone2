@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Parking</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Page Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('CEAFA-3D.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Admin Dashboard Header */
+        h1 {
+            font-size: 6vw;
+            background-color: rgba(33, 75, 148, 0.7);
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 900px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #214b94;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .logout-btn:hover {
+            background-color: #1a3c7a;
+        }
+
+        /* Dashboard Content */
+        .dashboard-container {
+            width: 90%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.45);
+            border-radius: 8px;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        /* Parking Area Text and Date Selection Form */
+        .date-selection h2,
+        .date-selection label {
+            color: black;
+        }
+
+        .date-selection {
+            margin-bottom: 30px;
+        }
+
+        /* Adjusted Input and Button Styles */
+        .date-selection input {
+            width: 100%; /* Match the button's width */
+            padding: 10px; /* Match the button's padding */
+            border-radius: 8px;
+            font-size: 16px; /* Match the button's font size */
+            box-sizing: border-box;
+            margin-bottom: 15px; /* Add space between inputs */
+        }
+
+        .date-selection button {
+            width: 100%; /* Full width */
+            padding: 10px;
+            background-color: #214b94;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .date-selection button:hover {
+            background-color: #1a3c7a;
+        }
+
+        /* Parked Car Box */
+        .parked-car-box {
+            background-color: rgba(33, 75, 148, 0.75);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .parked-car-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .parked-car-box p {
+            font-size: 1.5rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 5vw;
+            }
+
+            .dashboard-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .logout-btn {
+                top: 10px;
+                left: 10px;
+                font-size: 14px;
+            }
+
+            .parked-car-box h3 {
+                font-size: 1.5rem;
+            }
+
+            .parked-car-box p {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 5vw;
+            }
+
+            .logout-btn {
+                font-size: 12px;
+            }
+
+            .parked-car-box h3 {
+                font-size: 1.2rem;
+            }
+
+            .parked-car-box p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Logout Button -->
+    <button class="logout-btn" onclick="window.location.href='index.html'">Logout</button>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <h1>Admin Dashboard</h1>
+        
+        <!-- Parking Area Text and Date Selection Form -->
+        <div class="date-selection">
+            <h2>Parking Area</h2>
+            <label for="selectedDate">Select Date:</label>
+            <input type="date" id="selectedDate" name="selectedDate" required>
+            <button type="button" onclick="getParkedCars()">Get Parked Cars</button>
+        </div>
+
+        <!-- Display Parked Car Count -->
+        <div class="parked-car-box">
+            <h3>Parked Cars</h3>
+            <p id="parkedCarCount">Cars Parked on the Selected Date: 0</p>
+        </div>
+    </div>
+
+    <script>
+        // Fetch parked car count based on the selected date
+        function getParkedCars() {
+            const selectedDate = document.getElementById('selectedDate').value;
+
+            if (!selectedDate) {
+                alert('Please select a valid date');
+                return;
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "fetch_parked_cars.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // Update the parked car count display
+                    document.getElementById('parkedCarCount').innerText = 
+                        `Cars Parked on ${selectedDate}: ${xhr.responseText}`;
+                }
+            };
+            // Send the selected date to the server
+            xhr.send(`selectedDate=${selectedDate}`);
+        }
+    </script>
+</body>
+</html>
